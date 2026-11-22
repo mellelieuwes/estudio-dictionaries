@@ -53,6 +53,14 @@ inputs=(
   en-de definitions  https://kaikki.org/dewiktionary/Englisch/kaikki.org-dictionary-Englisch.jsonl
   es-de definitions  https://kaikki.org/dewiktionary/Spanisch/kaikki.org-dictionary-Spanisch.jsonl
   nl-de definitions  https://kaikki.org/dewiktionary/Niederl%C3%A4ndisch/kaikki.org-dictionary-Niederl%C3%A4ndisch.jsonl
+  fr-en forms        https://kaikki.org/dictionary/French/kaikki.org-dictionary-French.jsonl
+  fr-nl definitions  https://kaikki.org/nlwiktionary/Frans/kaikki.org-dictionary-Frans.jsonl
+  fr-es definitions  https://kaikki.org/eswiktionary/Franc%C3%A9s/kaikki.org-dictionary-Franc%C3%A9s.jsonl
+  fr-de definitions  https://kaikki.org/dewiktionary/Franz%C3%B6sisch/kaikki.org-dictionary-Franz%C3%B6sisch.jsonl
+  en-fr definitions  https://kaikki.org/frwiktionary/Anglais/kaikki.org-dictionary-Anglais.jsonl
+  es-fr definitions  https://kaikki.org/frwiktionary/Espagnol/kaikki.org-dictionary-Espagnol.jsonl
+  nl-fr definitions  https://kaikki.org/frwiktionary/N%C3%A9erlandais/kaikki.org-dictionary-N%C3%A9erlandais.jsonl
+  de-fr definitions  https://kaikki.org/frwiktionary/Allemand/kaikki.org-dictionary-Allemand.jsonl
 )
 
 mkdir -p "$raw"
