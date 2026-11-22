@@ -17,7 +17,7 @@ A language pair needs two files:
 
 Spanish forms are shared, for example: Spanish → English and Spanish → Dutch both use `forms-es`, so a device with both keeps it once.
 
-Sizes (download / on the device). Files keep their data version in their name: the ES/EN/NL files are from 2026.11.22, the German files from 2026.11.22.1 (added later without changing the others).
+Sizes (download / on the device). Files keep their data version in their name: the ES/EN/NL files are from 2026.11.22, the German files from 2026.11.22.1 and the French files from 2026.11.22.2 (each added later without changing the others).
 
 | File | Download | On the device | Contents |
 |---|---:|---:|---:|
@@ -25,6 +25,7 @@ Sizes (download / on the device). Files keep their data version in their name: t
 | `forms-en` | 1.7 MB | 8.2 MB | 0.12 M forms |
 | `forms-nl` | 7.8 MB | 35.4 MB | 0.50 M forms |
 | `forms-de` | 29.9 MB | 190.5 MB | 2.31 M forms |
+| `forms-fr` | 15.8 MB | 68.1 MB | 0.66 M forms |
 | `es-en` | 17.5 MB | 93.6 MB | 124,487 entries |
 | `es-nl` | 4.6 MB | 34.5 MB | 20,030 entries |
 | `en-es` | 0.8 MB | 2.5 MB | 20,432 entries |
@@ -37,10 +38,18 @@ Sizes (download / on the device). Files keep their data version in their name: t
 | `en-de` | 1.6 MB | 7.7 MB | 13,733 entries |
 | `es-de` | 0.2 MB | 0.9 MB | 2,992 entries |
 | `nl-de` | 0.1 MB | 0.2 MB | 1,124 entries |
+| `fr-en` | 10.5 MB | 50.5 MB | 103,458 entries |
+| `fr-nl` | 1.3 MB | 5.9 MB | 21,016 entries |
+| `fr-es` | 0.3 MB | 1.0 MB | 7,769 entries |
+| `fr-de` | 0.5 MB | 1.7 MB | 11,481 entries |
+| `en-fr` | 5.9 MB | 20.9 MB | 107,362 entries |
+| `es-fr` | 5.2 MB | 30.0 MB | 36,168 entries |
+| `nl-fr` | 1.4 MB | 5.3 MB | 32,054 entries |
+| `de-fr` | 31.8 MB | 300.5 MB | 75,697 entries |
 
 An entry is a word with one part of speech and at least one definition in the To language.
 
-Coverage follows the Wiktionary editions and is very uneven. German → English is broad; the other German directions are thin: the Dutch Wiktionary has no `Versammlung` or `Bibel`, the Spanish Wiktionary's German entries are mostly basic vocabulary and names, and the German Wiktionary's Spanish and Dutch entries lack words like `predicar`, `congregación`, `gemeente` or `mooi`. Missing words are shown as missing in the app; nothing is filled in from another language. JW terms such as `Königreichssaal` or `Dienstamtgehilfe` are not dictionary headwords; the app's JW vocabulary covers them, and unlisted German compounds are shown as their parts.
+Coverage follows the Wiktionary editions and is very uneven. German → English is broad; the other German directions are thin: the Dutch Wiktionary has no `Versammlung` or `Bibel`, the Spanish Wiktionary's German entries are mostly basic vocabulary and names, and the German Wiktionary's Spanish and Dutch entries lack words like `predicar`, `congregación`, `gemeente` or `mooi`. French → English is broad and the French Wiktionary explains many English, Spanish, Dutch and German words in French; French → Spanish (no `assemblée`, `prédication`) and French → German are thin. `de-fr` is large on the device because the French Wiktionary describes almost every German inflection in French (2.1 M form descriptions such as « datif pluriel de … »). Missing words are shown as missing in the app; nothing is filled in from another language. JW terms such as `Königreichssaal` or `Dienstamtgehilfe` are not dictionary headwords; the app's JW vocabulary covers them, and unlisted German compounds are shown as their parts.
 
 Release assets are named `<file>-<version>.sqlite.xz`: SQLite databases compressed with LZMA in an xz container (`xz -d` unpacks them).
 
@@ -73,10 +82,10 @@ Release assets are named `<file>-<version>.sqlite.xz`: SQLite databases compress
 
 Both kinds have `PRAGMA user_version = 3` and an `info(key, value)` table: `kind` = `forms` with `language`, or `kind` = `pair` with `source` and `target`.
 
-- **forms:** `lemma(id, word, pos, entry)` (entry = 1 when Wiktionary has an entry of its own; 0 for a lemma that only appears as the target of inflected forms), `grammar(id, tags)` (comma-separated Wiktextract tags), `form(form, folded, lemma → lemma.id, grammar → grammar.id)`. `folded` is the lookup spelling following the app's language rules (lowercase, accents removed except Spanish `ñ` and German `ä ö ü`, German `ß` as `ss`), stored only where it differs from `form`.
+- **forms:** `lemma(id, word, pos, entry)` (entry = 1 when Wiktionary has an entry of its own; 0 for a lemma that only appears as the target of inflected forms), `grammar(id, tags)` (comma-separated Wiktextract tags), `form(form, folded, lemma → lemma.id, grammar → grammar.id)`. `folded` is the lookup spelling following the app's language rules (lowercase, accents removed except Spanish `ñ` and German `ä ö ü`, German `ß` as `ss`, typographic apostrophes as `'` where the language joins them: French `aujourd'hui`, `l'`), stored only where it differs from `form`.
 - **pair:** `definition(word, folded, pos, head, senses)` with `senses` a JSON array of strings, and `description(form, lemma, pos, description)`: what the To-language Wiktionary says about an inflected form, such as "derde persoon enkelvoud van caminar".
 
-Definitions are never reversed or machine translated: Spanish → Dutch comes from the Dutch Wiktionary's Spanish entries, and so on. Inflected forms come from the editions marked `forms` in the script (the English Wiktionary for German); the others contribute definitions and form descriptions only, because their forms of foreign words are unreliable (pronouns listed as verb forms, nouns with articles).
+Definitions are never reversed or machine translated: Spanish → Dutch comes from the Dutch Wiktionary's Spanish entries, and so on. Inflected forms come from the editions marked `forms` in the script (the English Wiktionary for German and French); the others contribute definitions and form descriptions only, because their forms of foreign words are unreliable (pronouns listed as verb forms, nouns with articles).
 
 ## Building and publishing
 
@@ -86,9 +95,10 @@ The builder is `estudio-dictbuild`, part of the Estudio app's source (`EstudioKi
 scripts/build-and-publish.sh <path-to-app-folder> 2026.11.22                      # build everything into work/
 scripts/build-and-publish.sh <path-to-app-folder> 2026.11.22 --publish            # and upload with gh
 scripts/build-and-publish.sh <path-to-app-folder> 2026.11.22.1 --add de --publish # add one language
+scripts/build-and-publish.sh <path-to-app-folder> 2026.11.22.2 --add fr --publish # French, the same way
 ```
 
-The script downloads the extracts from Kaikki.org (once), imports them into one staging database (only words with a part of speech, glosses joined per sense with German-Wiktionary footnote markers and sense numbers removed, a fixed set of usage labels kept, form-of glosses kept as form descriptions, conjugation-table metadata, auxiliaries, periphrastic tenses and article forms dropped), writes the files, compresses them, writes `manifest.json`, uploads the files and then the manifest, and removes files the manifest no longer lists. With `--add <language>` it builds only the inputs involving that language, publishes `forms-<language>` and its pair files, and merges them into the published manifest: every other file keeps its name, URL and checksums, so devices never download them again, and apps that do not know the language ignore its files. Kaikki marks these per-language extracts as deprecated; if they disappear, the same JSONL can be produced by running [Wiktextract](https://github.com/tatuylonen/wiktextract) on the Wiktionary dumps.
+The script downloads the extracts from Kaikki.org (once), imports them into one staging database (only words with a part of speech, glosses joined per sense with German-Wiktionary footnote markers and sense numbers removed, a fixed set of usage labels kept, form-of glosses kept as form descriptions, conjugation-table metadata, auxiliaries, periphrastic tenses, article forms and pronunciations listed as forms (French tables) dropped, entries for whitespace characters skipped), writes the files, compresses them, writes `manifest.json`, uploads the files and then the manifest, and removes files the manifest no longer lists. With `--add <language>` it builds only the inputs involving that language, publishes `forms-<language>` and its pair files, and merges them into the published manifest: every other file keeps its name, URL and checksums, so devices never download them again, and apps that do not know the language ignore its files. Kaikki marks these per-language extracts as deprecated; if they disappear, the same JSONL can be produced by running [Wiktextract](https://github.com/tatuylonen/wiktextract) on the Wiktionary dumps.
 
 | Pair | Kaikki.org extract | Use |
 |---|---|---|
@@ -104,6 +114,14 @@ The script downloads the extracts from Kaikki.org (once), imports them into one 
 | en → de | [German Wiktionary, Englisch](https://kaikki.org/dewiktionary/Englisch/) | definitions |
 | es → de | [German Wiktionary, Spanisch](https://kaikki.org/dewiktionary/Spanisch/) | definitions |
 | nl → de | [German Wiktionary, Niederländisch](https://kaikki.org/dewiktionary/Niederl%C3%A4ndisch/) | definitions |
+| fr → en | [English Wiktionary, French](https://kaikki.org/dictionary/French/) | forms |
+| fr → nl | [Dutch Wiktionary, Frans](https://kaikki.org/nlwiktionary/Frans/) | definitions |
+| fr → es | [Spanish Wiktionary, Francés](https://kaikki.org/eswiktionary/Franc%C3%A9s/) | definitions |
+| fr → de | [German Wiktionary, Französisch](https://kaikki.org/dewiktionary/Franz%C3%B6sisch/) | definitions |
+| en → fr | [French Wiktionary, Anglais](https://kaikki.org/frwiktionary/Anglais/) | definitions |
+| es → fr | [French Wiktionary, Espagnol](https://kaikki.org/frwiktionary/Espagnol/) | definitions |
+| nl → fr | [French Wiktionary, Néerlandais](https://kaikki.org/frwiktionary/N%C3%A9erlandais/) | definitions |
+| de → fr | [French Wiktionary, Allemand](https://kaikki.org/frwiktionary/Allemand/) | definitions |
 
 ## License and attribution
 
